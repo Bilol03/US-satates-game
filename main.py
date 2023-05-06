@@ -16,7 +16,17 @@ print(len(states))
 len_res = []
 game_is_on = True
 while game_is_on:
-    user_answer = screen.textinput(title=f"{len(len_res)}/50, Guess the state name", prompt="What is the state name that you choose? ")
+    user_answer = screen.textinput(title=f"{len(len_res)}/50, Guess the state name", prompt="What is the state name that you choose? ").title()
+
+    if user_answer == "Exit":
+        missing_states = []
+        for i in all_states:
+            if i not in len_res:
+                missing_states.append(i)
+        to_csv = pd.DataFrame(missing_states)
+        to_csv.to_csv("Missing_states")
+        break
+
     if user_answer in all_states:
         t = turtle.Turtle()
         t.hideturtle()
@@ -24,11 +34,10 @@ while game_is_on:
         state_data = states[states.state == user_answer]
 
         t.goto(int(state_data.x), int(state_data.y))
-        t.write(arg=user_answer, font=('Arial', 12, 'normal'))
+        t.write(arg=state_data.state.item(), font=('Arial', 12, 'normal'))
 
         if user_answer not in len_res:
             len_res.append(user_answer)
-    print(len_res)
     if len(len_res) == len(states):
         game_is_on = False
 
